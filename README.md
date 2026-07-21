@@ -7,7 +7,7 @@ This repository contains a Rust implementation of the issuer-hiding, BBS-based a
 - `Cargo.toml`: Standard Cargo manifest with dependencies.
 - `src/lib.rs`: The core implementation of the four schemes from the paper.
 - `src/msm.rs`: Implementation of helper algorithms for multiexponentiation.
-- `src/one_of_l_commitments.rs`: Implementation of a 1-of-l commitment scheme based on Ristretto-255.
+- `src/one_of_l_commitments.rs`: A 1-of-l commitment scheme (used for stacking Sigmas) based on Ristretto-255.
 - `src/blst-wrappers.rs`: Used for efficient implementation of BLS12-381.
 - `tests/integration_test.rs`: End-to-end tests of correctness demonstrating usage.
 
