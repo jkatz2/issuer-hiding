@@ -1850,6 +1850,7 @@ pub mod issuer_hiding {
         mut rng: impl rand_core::CryptoRngCore,
     ) -> IssuerHidingZKPoK {
         let l_org = policy.len();
+        assert!(i_star < l_org, "i_star out of bounds");
         let logl = (l_org as f64).log2().ceil() as usize;
         let l = 1 << logl;
         let mut y = Vec::with_capacity(l);
@@ -1931,12 +1932,15 @@ pub mod issuer_hiding {
         let pre_z_resp = z_resp.precompute();
         let g1_z_resp = params.g1 * &pre_z_resp;
         let mut A = Vec::with_capacity(l);
-        for i in 0..l {
+        for i in 0..l_org {
             if i == i_star {
                 A.push(A_istar);
             } else {
                 A.push(y[i] * &pre_challenge + g1_z_resp);
             }
+        }
+        while A.len() < l {
+            A.push(A[l_org - 1].clone());
         }
 
         let decom_ss =
@@ -2024,11 +2028,14 @@ pub mod issuer_hiding {
         let pre_z = z.precompute();
         let g1_z = params.g1 * &pre_z;
         let mut A = Vec::with_capacity(l);
-        for i in 0..l {
+        for i in 0..l_org {
             A.push(y[i] * &pre_challenge + g1_z);
         }
+        while A.len() < l {
+            A.push(A[l_org - 1].clone());
+        }
 
-        // 2. Reconstruct Statement 3 commitments (same as NaiveShort/GK)
+        // 2. Reconstruct commitments (same as NaiveShort/GK)
         let computed_com1 =
             multiexp_advanced(&[*A_prime, *C_bar, *A_bar], &[-*z_e, *z_r2, -*challenge]);
 
